@@ -21,7 +21,9 @@ import com.util.*;
 
 public class ManipulaXML {
 	final static String LOCALHOSTCOMPRAS = "src/xml.compras/";
-	final static String LOCALHOSTCADASTROS = "src/xml.cadastros/";
+	final static String LOCALHOSTCADASTROSPESSOAS = "src/xml.cadastros.pessoas/";
+	final static String LOCALHOSTCADASTROSPRODUTOS= "src/xml.cadastros.produtos/";
+
 	
 	public static boolean gravarXMLCompra(Compra compra){
 		// Elemento root do estabelecimento
@@ -48,9 +50,9 @@ public class ManipulaXML {
 
 		
 		Element pessoa = new Element("pessoa");
-		pessoa.setAttribute("id", String.valueOf(lerXMLUltimoIdCliente()));
+		pessoa.setAttribute("id", String.valueOf(compra.getCliente().getId()));
 		
-		if (!retornaCadastro(compra.getCliente().getCpf())){
+		if (!pessoaTemCadastro(compra.getCliente().getCpf())){
 			Element nome = new Element("nome");
 			nome.setText(compra.getCliente().getNome());
 			
@@ -155,7 +157,7 @@ public class ManipulaXML {
 		return false;
 	}
 	
-	public static boolean gravarXMLCadastro(Pessoa cliente){
+	public static boolean gravarXMLCadastroCliente(Pessoa cliente){
 		// Elemento root do estabelecimento
 		Element raiz = new Element("Cadastro");
 
@@ -166,12 +168,14 @@ public class ManipulaXML {
 		titulo.setText("Cadastro Pessoal");
 
 		Element data = new Element("data");
-		data.setText(Datas.DataHoraForStringPadraoH(new Date()));
+		data.setText(Datas.DataForStringPadrao(new Date()));
 		
 		raiz.addContent(titulo);
 		raiz.addContent(data);
 		
 		Element pessoa = new Element("pessoa");
+		pessoa.setAttribute("id", String.valueOf(lerXMLUltimoIdCliente()));
+
 		
 		Element nome = new Element("nome");
 		nome.setText(cliente.getNome());
@@ -235,7 +239,60 @@ public class ManipulaXML {
 		XMLOutputter xout = new XMLOutputter();	
 		try {
 			//criando o arquivo de saida do cadastro que estão na fila
-			BufferedWriter cadastro = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(LOCALHOSTCADASTROS +  cliente.getId() + ".xml"),"UTF-8"));
+			BufferedWriter cadastro = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(LOCALHOSTCADASTROSPESSOAS +  cliente.getCpf() + ".xml"),"UTF-8"));
+			//imprimindo o xml no arquivo das pessoas
+			xout.output(documento, cadastro);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean gravarXMLCadastroProduto(Produto p){		
+		// Elemento root do estabelecimento
+		Element raiz = new Element("Produto");
+		
+		//Defie raiz como root
+		Document documento = new Document(raiz);
+
+		Element titulo = new Element("titulo");
+		titulo.setText("Cadastro Produto");
+		
+		Element data = new Element("data");
+		data.setText(Datas.DataHoraForStringPadraoH(new Date()));
+		
+		raiz.addContent(titulo);
+		raiz.addContent(data);
+		
+		Element produto = new Element("produto");
+		produto.setAttribute("id", String.valueOf(p.getId()));
+		
+		Element codBarras = new Element("codigo_barras");
+		codBarras.setText(String.valueOf(p.getCodigoBarras()));
+		
+		Element descricao = new Element("descricao");
+		descricao.setText(p.getDescricao());
+		
+		Element quantidade = new Element("quantidade");
+		quantidade.setText(String.valueOf(p.getQuantidade()));
+		
+		Element valor = new Element("valor");
+		valor.setText(String.valueOf(p.getValor()));
+
+		
+		produto.addContent(codBarras);
+		produto.addContent(descricao);
+		produto.addContent(quantidade);
+		produto.addContent(valor);
+		
+		raiz.addContent(produto);
+
+		//Classe responsável por criar / gerar o xml
+		XMLOutputter xout = new XMLOutputter();	
+		try {
+			//criando o arquivo de saida do cadastro que estão na fila
+			BufferedWriter cadastro = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(LOCALHOSTCADASTROSPRODUTOS +  p.getId() + ".xml"),"UTF-8"));
 			//imprimindo o xml no arquivo das pessoas
 			xout.output(documento, cadastro);
 			return true;
@@ -270,7 +327,7 @@ public class ManipulaXML {
 		XMLOutputter xout = new XMLOutputter();	
 		try {
 			//criando o arquivo de saida do cadastro que estão na fila
-			BufferedWriter ultimoId = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(LOCALHOSTCADASTROS + "lastId.xml"),"UTF-8"));
+			BufferedWriter ultimoId = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(LOCALHOSTCADASTROSPESSOAS + "lastId.xml"),"UTF-8"));
 			//imprimindo o xml no arquivo das pessoas
 			xout.output(documento, ultimoId);
 			return true;
@@ -280,65 +337,68 @@ public class ManipulaXML {
 		return false;
 	}
 	
-	public static Boolean retornaCadastro(String cpf){
-		List<Pessoa> cadastros = lerXMLCadastros();
-		for (Pessoa p: cadastros){
-			if (cpf == p.getCpf()){
-				cadastros.clear();
-				return true;
-			}
+	public static Boolean pessoaTemCadastro(String cpf) {
+		Pessoa cadastro = lerXMLCadastroCliente(cpf);
+		if (cpf == cadastro.getCpf()) {
+			return true;
 		}
-		cadastros.clear();
 		return false;
 	}
 	
-	public static List<Pessoa> lerXMLCadastros(){
-		List<Pessoa> cadastros = new ArrayList<>();
+	public static Pessoa lerXMLCadastroCliente(String cpf){
 		Document documento = null;
 		SAXBuilder construtor = new SAXBuilder();	
+
+    	try { 
+			documento = construtor.build(LOCALHOSTCADASTROSPESSOAS + cpf+ ".xml");
+		} catch (Exception e) {
+			e.printStackTrace();       
+	    }
+	
+		Element element = documento.getRootElement();
+			
+		Pessoa pes = new Pessoa();
+		pes.setId(Long.parseLong(element.getAttributeValue("id")));
+		pes.setCpf(element.getChildText("cpf"));
+		pes.setRg(element.getChildText("rg"));
+		pes.setIdade(Integer.parseInt(element.getChildText("idade")));
+		pes.setNome(element.getChildText("nome"));
+		Endereco address = new Endereco();
+		address.setPais(element.getChild("endereco").getChildText("pais"));
+		address.setEstado(element.getChild("endereco").getChildText("estado"));
+		address.setCidade(element.getChild("endereco").getChildText("cidade"));
+		address.setBairro(element.getChild("endereco").getChildText("bairro"));
+		address.setRua(element.getChild("endereco").getChildText("rua"));
+		address.setNumeroCasa(Integer.parseInt(element.getChild("endereco").getChildText("numero_casa")));
+		address.setCep(Integer.parseInt(element.getChild("endereco").getChildText("cep")));
+		pes.setEndereco(address);
+		pes.setEmail(element.getChildText("email"));
 		
-		File pastaCadastros = new File(LOCALHOSTCADASTROS);
-		File[] listaCadastros = pastaCadastros.listFiles();
-		
-		for (File file : listaCadastros) {
-	    	try { 
-				documento = construtor.build(LOCALHOSTCADASTROS + file);
-			} catch (Exception e) {
-				e.printStackTrace();       
-		    }
-		
-			Element element = documento.getRootElement();
-				
-			Pessoa pes = new Pessoa();
-			pes.setId(Long.parseLong(element.getAttributeValue("id")));
-			pes.setCpf(element.getChildText("cpf"));
-			pes.setRg(element.getChildText("rg"));
-			pes.setIdade(Integer.parseInt(element.getChildText("idade")));
-			pes.setNome(element.getChildText("nome"));
-			Endereco address = new Endereco();
-			address.setPais(element.getChild("endereco").getChildText("pais"));
-			address.setEstado(element.getChild("endereco").getChildText("estado"));
-			address.setCidade(element.getChild("endereco").getChildText("cidade"));
-			address.setBairro(element.getChild("endereco").getChildText("bairro"));
-			address.setRua(element.getChild("endereco").getChildText("rua"));
-			address.setNumeroCasa(Integer.parseInt(element.getChild("endereco").getChildText("numero_casa")));
-			address.setCep(Integer.parseInt(element.getChild("endereco").getChildText("cep")));
-			pes.setEndereco(address);
-			pes.setEmail(element.getChildText("email"));
-			try{
-				pes.setDataNascimento(Datas.StringParaDataHora(element.getChildText("data_nascimento")));
-			} catch(ParseException pE){
-				pE.printStackTrace();
-			}
-			cadastros.add(pes);
+		try{
+			pes.setDataNascimento(Datas.StringParaDataHora(element.getChildText("data_nascimento")));
+		} catch(ParseException pE){
+			pE.printStackTrace();
 		}
-		return cadastros;
+		
+		return pes;
 	}
 	
 	public static long lerXMLUltimoIdCliente(){
 		long id=0;
 		
 		return id;
+	}
+	
+	public static Produto retornaCadastroProdutoId(long id){
+		Produto p = new Produto();
+		
+		return p;
+	}
+	
+	public static Produto retornaCadastroProdutoBarra(long codigoBarras){
+		Produto p = new Produto();
+		
+		return p;
 	}
 	
 }
