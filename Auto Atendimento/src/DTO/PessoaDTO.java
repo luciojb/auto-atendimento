@@ -1,18 +1,19 @@
-package com.classes;
+package DTO;
 
 import java.util.Date;
 
-public class Pessoa {
+public class PessoaDTO {
 	
 	private long id;
 	private String nome, email, cpf, rg;
 	private int idade;
 	private Date dataNascimento;
-	private Endereco endereco;
-	private Cartao cartao;
+	private EnderecoDTO endereco = new EnderecoDTO();
+	private CartaoDTO cartao;
 	
-	public Pessoa(String nome, String email, String cpf, String rg, int idade, Date dataNascimento, Endereco endereco,
-			Cartao cartao, long id) {
+	/*
+	public PessoaDTO(String nome, String email, String cpf, String rg, int idade, Date dataNascimento, EnderecoDTO endereco,
+			CartaoDTO cartao, long id) {
 		super();
 		this.nome = nome;
 		this.email = email;
@@ -25,12 +26,12 @@ public class Pessoa {
 		this.id = id;
 	}
 
-	public Pessoa() {
+	public PessoaDTO() {
 		super();
-		endereco = new Endereco();
-		cartao = new Cartao();
+		endereco = new EnderecoDTO();
+		cartao = new CartaoDTO();
 	}
-
+	*/
 	public String getNome() {
 		return nome;
 	}
@@ -71,19 +72,19 @@ public class Pessoa {
 		this.dataNascimento = dataNascimento;
 	}
 
-	public Endereco getEndereco() {
+	public EnderecoDTO getEndereco() {
 		return endereco;
 	}
 
-	public void setEndereco(Endereco endereco) {
+	public void setEndereco(EnderecoDTO endereco) {
 		this.endereco = endereco;
 	}
 
-	public Cartao getCartao() {
+	public CartaoDTO getCartao() {
 		return cartao;
 	}
 
-	public void setCartao(Cartao cartao) {
+	public void setCartao(CartaoDTO cartao) {
 		this.cartao = cartao;
 	}
 

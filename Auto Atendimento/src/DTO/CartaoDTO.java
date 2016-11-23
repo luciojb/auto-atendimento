@@ -1,11 +1,12 @@
-package com.classes;
+package DTO;
 
-public class Cartao {
+public class CartaoDTO {
 	private int numeroCartao, agencia, numeroContaBancaria, senha;
 	private String bandeira;
 	private double saldo;
 	
-	public Cartao(int numeroCartao, int agencia, int numeroContaBancaria, String bandeira, double saldo, int senha) {
+	/*
+	public CartaoDTO(int numeroCartao, int agencia, int numeroContaBancaria, String bandeira, double saldo, int senha) {
 		super();
 		this.numeroCartao = numeroCartao;
 		this.agencia = agencia;
@@ -15,9 +16,10 @@ public class Cartao {
 		this.senha = senha;
 	}
 
-	public Cartao() {
+	public CartaoDTO() {
 		super();
 	}
+	*/
 
 	public int getNumeroCartao() {
 		return numeroCartao;

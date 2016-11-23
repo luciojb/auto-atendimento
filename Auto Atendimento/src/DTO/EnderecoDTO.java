@@ -1,10 +1,11 @@
-package com.classes;
+package DTO;
 
-public class Endereco {
+public class EnderecoDTO {
 	private String pais, estado, cidade, bairro, rua;
 	private int numeroCasa, cep;
 	
-	public Endereco(String pais, String estado, String cidade, String bairro, String rua, int numeroCasa, int cep) {
+	/*
+	public EnderecoDTO(String pais, String estado, String cidade, String bairro, String rua, int numeroCasa, int cep) {
 		super();
 		this.pais = pais;
 		this.estado = estado;
@@ -15,9 +16,10 @@ public class Endereco {
 		this.cep = cep;
 	}
 
-	public Endereco() {
+	public EnderecoDTO() {
 		super();
 	}
+	*/
 	
 	public String getPais() {
 		return pais;

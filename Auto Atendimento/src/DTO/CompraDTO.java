@@ -1,45 +1,46 @@
-package com.classes;
+package DTO;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.util.Datas;
+import util.Datas;
 
-public class Compra {
+public class CompraDTO {
 	
 	private Long codigo;
-	private Pessoa cliente;
-	private List<Produto> listaProdutos;
+	private PessoaDTO cliente = new PessoaDTO();
+	private List<ProdutoDTO> listaProdutos = new ArrayList<ProdutoDTO>();
 	private Date dataAtendimentoIn, dataAtendimentoFim;
-	
-	public Compra(Pessoa cliente, Date dataAtedimentoIn, Long codigo) {
+	/*
+	public CompraDTO(PessoaDTO cliente, Date dataAtedimentoIn, Long codigo) {
 		super();
 		this.cliente = cliente;
 		this.dataAtendimentoIn = new Date();
 		this.codigo =  codigo;
 	}
 	
-	public Compra(){
+	public CompraDTO(){
 		super();
-		cliente = new Pessoa();
+		cliente = new PessoaDTO();
 		listaProdutos = new ArrayList<>();
 		this.dataAtendimentoIn = new Date();
 	}
+	*/
 
-	public Pessoa getCliente() {
+	public PessoaDTO getCliente() {
 		return cliente;
 	}
 	
-	public void setCliente(Pessoa cliente) {
+	public void setCliente(PessoaDTO cliente) {
 		this.cliente = cliente;
 	}
 	
-	public List<Produto> getListaProdutos() {
+	public List<ProdutoDTO> getListaProdutos() {
 		return listaProdutos;
 	}
 	
-	public void setListaProdutos(List<Produto> listaProdutos) {
+	public void setListaProdutos(List<ProdutoDTO> listaProdutos) {
 		this.listaProdutos = listaProdutos;
 	}
 	
@@ -73,23 +74,23 @@ public class Compra {
  * 		
  * }
 */	
-	public void insereProduto(Produto produto, List<Produto> listaProdutos){
+	public void insereProduto(ProdutoDTO produto, List<ProdutoDTO> listaProdutos){
 		
 	}
 	
-	public void removeProduto(Produto produto, List<Produto> listaProdutos){
+	public void removeProduto(ProdutoDTO produto, List<ProdutoDTO> listaProdutos){
 		
 	}
 	
-	public String Cupom(Pessoa cliente, List<Produto> listaProdutos){
+	public String Cupom(PessoaDTO cliente, List<ProdutoDTO> listaProdutos){
 		StringBuilder cupom = new StringBuilder();
 		
 		return cupom.toString();
 	}
 	
-	public double calculaTotal(List<Produto> listaProdutos){
+	public double calculaTotal(List<ProdutoDTO> listaProdutos){
 		double total=0;
-		for(Produto p: listaProdutos){
+		for(ProdutoDTO p: listaProdutos){
 			total+=(p.getQuantidade()*p.getValor());
 		}
 		return total;
@@ -103,7 +104,7 @@ public class Compra {
 		builder.append(", código=");
 		builder.append(codigo);
 		builder.append(", listaProdutos=");
-		for(Produto p : listaProdutos)
+		for(ProdutoDTO p : listaProdutos)
 			builder.append(p.toString());
 		builder.append(", dataAtendimentoIn=");
 		builder.append(Datas.DataForStringPadrao(dataAtendimentoIn));

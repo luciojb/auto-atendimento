@@ -1,13 +1,13 @@
-package com.classes;
+package DTO;
 
-public class Produto {
+public class ProdutoDTO {
 	private long id;
 	private double valor;
 	private String descricao;
 	private int quantidade;
 	private long codigoBarras;
-	
-	public Produto(long id, double valor, String descricao, int quantidade, long codigoBarras) {
+	/*
+	public ProdutoDTO(long id, double valor, String descricao, int quantidade, long codigoBarras) {
 		super();
 		this.id = id;
 		this.valor = valor;
@@ -16,8 +16,9 @@ public class Produto {
 		this.codigoBarras = codigoBarras;
 	}
 	
-	public Produto() {
+	public ProdutoDTO() {
 	}
+	*/
 	
 	public long getId() {
 		return id;
