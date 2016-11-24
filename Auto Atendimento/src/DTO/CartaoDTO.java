@@ -1,12 +1,39 @@
 package DTO;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity @Table(name="cartao")
 public class CartaoDTO {
-	private int numeroCartao, agencia, numeroContaBancaria, senha;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+	
+	@Column(name="numero_cartao")
+	private long numeroCartao;
+	
+	@Column
+	private int agencia;
+	
+	@Column(name="numero_conta")
+	private int numeroContaBancaria;
+	
+	@Column
+	private int senha;
+	
+	@Column
 	private String bandeira;
+	
+	@Column
 	private double saldo;
 	
 	/*
-	public CartaoDTO(int numeroCartao, int agencia, int numeroContaBancaria, String bandeira, double saldo, int senha) {
+	public CartaoDTO(long numeroCartao, int agencia, int numeroContaBancaria, String bandeira, double saldo, int senha) {
 		super();
 		this.numeroCartao = numeroCartao;
 		this.agencia = agencia;
@@ -21,11 +48,11 @@ public class CartaoDTO {
 	}
 	*/
 
-	public int getNumeroCartao() {
+	public long getNumeroCartao() {
 		return numeroCartao;
 	}
 
-	public void setNumeroCartao(int numeroCartao) {
+	public void setNumeroCartao(long numeroCartao) {
 		this.numeroCartao = numeroCartao;
 	}
 
@@ -67,6 +94,14 @@ public class CartaoDTO {
 
 	public void setSenha(int senha) {
 		this.senha = senha;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@Override
