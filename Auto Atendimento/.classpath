@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate"/>
+	<classpathentry kind="lib" path="/home/lucio/Downloads/hibernate-release-5.2.4.Final/lib/jpa-metamodel-generator/hibernate-jpamodelgen-5.2.4.Final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
