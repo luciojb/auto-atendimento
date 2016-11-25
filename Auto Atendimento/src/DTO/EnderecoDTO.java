@@ -1,8 +1,39 @@
 package DTO;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity @Table(name="endereco")
 public class EnderecoDTO {
-	private String pais, estado, cidade, bairro, rua;
-	private int numeroCasa, cep;
+	
+	@Id
+	@GeneratedValue
+	private int id;
+	
+	@Column
+	private String pais;
+	
+	@Column
+	private String estado;
+	
+	@Column
+	private String cidade;
+	
+	@Column
+	private String bairro;
+	
+	@Column
+	private String rua;
+	
+	@Column
+	private int numeroCasa;
+	
+	@Column
+	private int cep;
 	
 	/*
 	public EnderecoDTO(String pais, String estado, String cidade, String bairro, String rua, int numeroCasa, int cep) {
@@ -75,6 +106,14 @@ public class EnderecoDTO {
 
 	public void setCep(int cep) {
 		this.cep = cep;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@Override

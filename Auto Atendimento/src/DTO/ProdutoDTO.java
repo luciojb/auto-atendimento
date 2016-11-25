@@ -1,10 +1,29 @@
 package DTO;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity  @Table(name="produto")
 public class ProdutoDTO {
+	
+	@Id
+	@GeneratedValue
 	private long id;
+	
+	@Column
 	private double valor;
+	
+	@Column
 	private String descricao;
+	
+	@Column
 	private int quantidade;
+	
+	@Column
 	private long codigoBarras;
 	/*
 	public ProdutoDTO(long id, double valor, String descricao, int quantidade, long codigoBarras) {

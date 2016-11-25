@@ -2,13 +2,58 @@ package DTO;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.JoinColumn;
+
+@Entity @Table(name="pessoa")
 public class PessoaDTO {
 	
+	@Id
+	@GeneratedValue
 	private long id;
-	private String nome, email, cpf, rg;
+	
+	@Column
+	private String nome;
+	
+	@Column
+	private String email;
+	
+	@Column
+	private String cpf;
+	
+	@Column
+	private String rg;
+	
+	@Column
 	private int idade;
+	
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataNascimento;
-	private EnderecoDTO endereco = new EnderecoDTO();
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+    @JoinTable(name="pessoa_endereco",
+              joinColumns={ @JoinColumn(name="pessoa_id",  
+               referencedColumnName="id")},  
+              inverseJoinColumns={ @JoinColumn(name="endereco_id",   
+               referencedColumnName="id")})  
+	private EnderecoDTO endereco;
+	
+	@OneToOne(cascade=CascadeType.ALL)
+    @JoinTable(name="pessoa_cartao",
+              joinColumns={ @JoinColumn(name="pessoa_id",  
+               referencedColumnName="id")},  
+              inverseJoinColumns={ @JoinColumn(name="cartao_id",   
+               referencedColumnName="id")})  
 	private CartaoDTO cartao;
 	
 	/*

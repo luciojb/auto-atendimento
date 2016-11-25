@@ -4,16 +4,48 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import util.Datas;
 
+
+@Entity @Table(name="compra")
 public class CompraDTO {
 	
-	private Long codigo;
-	private PessoaDTO cliente = new PessoaDTO();
+	@Id
+	@GeneratedValue
+	private Long id;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "cliente_id")
+	private PessoaDTO cliente;
+	
+	@ManyToMany(cascade=CascadeType.ALL)  
+    @JoinTable(name="compra_produto",  
+              joinColumns={@JoinColumn(name="compra_id", 
+               referencedColumnName="id")},  
+              inverseJoinColumns={@JoinColumn(name="produto_id", 
+                referencedColumnName="id")}) 
 	private List<ProdutoDTO> listaProdutos = new ArrayList<ProdutoDTO>();
-	private Date dataAtendimentoIn, dataAtendimentoFim;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dataAtendimentoIn;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dataAtendimentoFim;
 	/*
-	public CompraDTO(PessoaDTO cliente, Date dataAtedimentoIn, Long codigo) {
+	public CompraDTO(PessoaDTO cliente, Date dataAtedimentoIn, int codigo) {
 		super();
 		this.cliente = cliente;
 		this.dataAtendimentoIn = new Date();
@@ -52,12 +84,12 @@ public class CompraDTO {
 		this.dataAtendimentoIn = dataAtendimentoIn;
 	}
 
-	public Long getCodigo() {
-		return codigo;
+	public Long getId() {
+		return id;
 	}
 
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Date getDataAtendimentoFim() {
@@ -67,42 +99,15 @@ public class CompraDTO {
 	public void setDataAtendimentoFim(Date dataAtendimentoFim) {
 		this.dataAtendimentoFim = dataAtendimentoFim;
 	}
-/*
- * Talvez desnecessário
- * 
- * public void atendimento(Pessoa pessoa){
- * 		
- * }
-*/	
-	public void insereProduto(ProdutoDTO produto, List<ProdutoDTO> listaProdutos){
-		
-	}
-	
-	public void removeProduto(ProdutoDTO produto, List<ProdutoDTO> listaProdutos){
-		
-	}
-	
-	public String Cupom(PessoaDTO cliente, List<ProdutoDTO> listaProdutos){
-		StringBuilder cupom = new StringBuilder();
-		
-		return cupom.toString();
-	}
-	
-	public double calculaTotal(List<ProdutoDTO> listaProdutos){
-		double total=0;
-		for(ProdutoDTO p: listaProdutos){
-			total+=(p.getQuantidade()*p.getValor());
-		}
-		return total;
-	}
+
 	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Compra [cliente=");
 		builder.append(cliente.toString());
-		builder.append(", código=");
-		builder.append(codigo);
+		builder.append(", id=");
+		builder.append(id);
 		builder.append(", listaProdutos=");
 		for(ProdutoDTO p : listaProdutos)
 			builder.append(p.toString());
