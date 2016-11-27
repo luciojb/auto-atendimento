@@ -37,11 +37,17 @@ public class GenericDAO<T> {
 	
 	public boolean update(T obj) {
 		EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        em.merge(obj);
-        em.getTransaction().commit();
-        em.close();
-        return true;
+       try{
+    	   em.getTransaction().begin();
+           em.merge(obj);
+           em.getTransaction().commit();
+           return true;
+       } catch (Exception e) {
+    	   System.err.println(e);
+			return false;
+       } finally {
+		 em.close();
+       }
 	}
 	
     public boolean remove(T obj) {

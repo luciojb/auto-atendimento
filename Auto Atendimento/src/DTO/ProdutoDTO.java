@@ -23,7 +23,7 @@ public class ProdutoDTO {
 	@Column
 	private int quantidade;
 	
-	@Column
+	@Column(name="codigo_barras")
 	private long codigoBarras;
 	/*
 	public ProdutoDTO(long id, double valor, String descricao, int quantidade, long codigoBarras) {

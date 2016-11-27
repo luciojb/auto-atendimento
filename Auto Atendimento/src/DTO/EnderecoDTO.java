@@ -29,7 +29,7 @@ public class EnderecoDTO {
 	@Column
 	private String rua;
 	
-	@Column
+	@Column(name="numero_casa")
 	private int numeroCasa;
 	
 	@Column

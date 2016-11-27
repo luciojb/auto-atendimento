@@ -18,7 +18,7 @@ public class teste {
 		CartaoDAO cd = new CartaoDAO();
 		
 		if (cd instanceof GenericDAO<?>){
-			cd.insert(c);
+			//cd.insert(c);
 			List<CartaoDTO> cList = cd.findAll();
 			for(Object ct : cList){
 				System.out.println(((CartaoDTO) ct).getNumeroContaBancaria());

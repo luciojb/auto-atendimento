@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -40,9 +41,11 @@ public class CompraDTO {
 	private List<ProdutoDTO> listaProdutos = new ArrayList<ProdutoDTO>();
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="data_atendimento_in")
 	private Date dataAtendimentoIn;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="data_atendimento_fim")
 	private Date dataAtendimentoFim;
 	/*
 	public CompraDTO(PessoaDTO cliente, Date dataAtedimentoIn, int codigo) {

@@ -1,6 +1,8 @@
 package DTO;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -38,6 +41,7 @@ public class PessoaDTO {
 	private int idade;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="data_nascimento")
 	private Date dataNascimento;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
@@ -48,13 +52,13 @@ public class PessoaDTO {
                referencedColumnName="id")})  
 	private EnderecoDTO endereco;
 	
-	@OneToOne(cascade=CascadeType.ALL)
-    @JoinTable(name="pessoa_cartao",
-              joinColumns={ @JoinColumn(name="pessoa_id",  
-               referencedColumnName="id")},  
-              inverseJoinColumns={ @JoinColumn(name="cartao_id",   
-               referencedColumnName="id")})  
-	private CartaoDTO cartao;
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinTable(name="pessoa_cartao",  
+	    joinColumns={@JoinColumn(name="pessoa_id", 
+	     referencedColumnName="id")},  
+	    inverseJoinColumns={@JoinColumn(name="cartao_id", 
+	      referencedColumnName="id")})
+	private List<CartaoDTO> listaCartao = new ArrayList<CartaoDTO>();
 	
 	/*
 	public PessoaDTO(String nome, String email, String cpf, String rg, int idade, Date dataNascimento, EnderecoDTO endereco,
@@ -125,12 +129,12 @@ public class PessoaDTO {
 		this.endereco = endereco;
 	}
 
-	public CartaoDTO getCartao() {
-		return cartao;
+	public List<CartaoDTO> getCartao() {
+		return listaCartao;
 	}
 
-	public void setCartao(CartaoDTO cartao) {
-		this.cartao = cartao;
+	public void setCartao(List<CartaoDTO> listaCartao) {
+		this.listaCartao = listaCartao;
 	}
 
 	public long getId() {
@@ -168,8 +172,10 @@ public class PessoaDTO {
 		builder.append(dataNascimento);
 		builder.append(", endereco=");
 		builder.append(endereco.toString());
-		builder.append(", cartao=");
-		builder.append(cartao.toString());
+		builder.append(", cartões=");
+		for (CartaoDTO cd : listaCartao){
+			builder.append(cd.toString());
+		}		
 		builder.append("]");
 		return builder.toString();
 	}
