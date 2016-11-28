@@ -11,18 +11,19 @@ public class CartaoDTO {
 	
 	@Id
 	@GeneratedValue
+	@Column(nullable=false)
 	private int id;
 	
-	@Column(name="numero_cartao")
+	@Column(name="numero_cartao", nullable=false)
 	private long numeroCartao;
 	
-	@Column
+	@Column(nullable=false)
 	private int agencia;
 	
-	@Column(name="numero_conta")
+	@Column(name="numero_conta", nullable=false)
 	private int numeroContaBancaria;
 	
-	@Column
+	@Column(nullable=false)
 	private int senha;
 	
 	@Column

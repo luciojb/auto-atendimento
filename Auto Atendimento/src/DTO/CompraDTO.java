@@ -26,6 +26,7 @@ public class CompraDTO {
 	
 	@Id
 	@GeneratedValue
+	@Column(nullable=false)
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

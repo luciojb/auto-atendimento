@@ -12,6 +12,7 @@ public class EnderecoDTO {
 	
 	@Id
 	@GeneratedValue
+	@Column(nullable=false)
 	private int id;
 	
 	@Column

@@ -12,18 +12,19 @@ public class ProdutoDTO {
 	
 	@Id
 	@GeneratedValue
+	@Column(nullable=false)
 	private long id;
 	
 	@Column
 	private double valor;
 	
-	@Column
+	@Column(nullable=false)
 	private String descricao;
 	
 	@Column
 	private int quantidade;
 	
-	@Column(name="codigo_barras")
+	@Column(name="codigo_barras", nullable=false)
 	private long codigoBarras;
 	/*
 	public ProdutoDTO(long id, double valor, String descricao, int quantidade, long codigoBarras) {

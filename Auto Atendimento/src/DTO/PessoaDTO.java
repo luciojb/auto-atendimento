@@ -23,18 +23,19 @@ public class PessoaDTO {
 	
 	@Id
 	@GeneratedValue
+	@Column(nullable=false)
 	private long id;
 	
-	@Column
+	@Column(nullable=false)
 	private String nome;
 	
 	@Column
 	private String email;
 	
-	@Column
+	@Column(nullable=false)
 	private String cpf;
 	
-	@Column
+	@Column(nullable=false)
 	private String rg;
 	
 	@Column
