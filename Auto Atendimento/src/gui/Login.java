@@ -11,6 +11,8 @@ import javax.swing.ImageIcon;
 
 import java.awt.Color;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.Image;
 
 import javax.swing.JLabel;
@@ -21,13 +23,15 @@ import java.awt.SystemColor;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+import javax.swing.JPasswordField;
+import java.awt.Component;
 
 public class Login extends JFrame {
 
 	private static final long serialVersionUID = 2863534982188441208L;
 	private JPanel loginPanel;
 	private JTextField loginGet;
-	private JTextField PasswordGet;
+	private JPasswordField passwordGet;
 
 	/**
 	 * Launch the application.
@@ -123,15 +127,18 @@ public class Login extends JFrame {
 		
 		loginGet = new JTextField();
 		loginGet.setColumns(10);
+		addWindowListener(new WindowAdapter(){ 
+			  public void windowOpened( WindowEvent e){ 
+			    loginGet.requestFocus();
+			  } 
+			}); 
+		
 		
 		JTextPane passwordText = new JTextPane();
 		passwordText.setEditable(false);
 		passwordText.setText("Password");
 		passwordText.setFont(new Font("Dialog", Font.BOLD, 13));
 		passwordText.setBackground(Color.LIGHT_GRAY);
-		
-		PasswordGet = new JTextField();
-		PasswordGet.setColumns(10);
 		
 		JButton botaoEntrar = new JButton("Entrar");
 		botaoEntrar.setIcon(new ImageIcon(Login.class.getResource("/img/loginOk.png")));
@@ -140,25 +147,28 @@ public class Login extends JFrame {
 		JButton botaoCancelar = new JButton("Cancelar");
 		botaoCancelar.setHorizontalTextPosition(SwingConstants.LEADING);
 		botaoCancelar.setIcon(new ImageIcon(Login.class.getResource("/img/loginCancel.png")));
+		
+		passwordGet = new JPasswordField();
+		passwordGet.setEditable(false);
 		GroupLayout gl_loginForms = new GroupLayout(loginForms);
 		gl_loginForms.setHorizontalGroup(
 			gl_loginForms.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_loginForms.createSequentialGroup()
-					.addGroup(gl_loginForms.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_loginForms.createSequentialGroup()
-							.addComponent(loginText, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+					.addGroup(gl_loginForms.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_loginForms.createSequentialGroup()
+							.addComponent(loginText, GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(loginGet, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_loginForms.createSequentialGroup()
+						.addGroup(Alignment.TRAILING, gl_loginForms.createSequentialGroup()
 							.addGroup(gl_loginForms.createParallelGroup(Alignment.TRAILING)
 								.addGroup(gl_loginForms.createSequentialGroup()
 									.addContainerGap()
 									.addComponent(botaoEntrar, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE))
-								.addComponent(passwordText, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
+								.addComponent(passwordText, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(gl_loginForms.createParallelGroup(Alignment.LEADING)
-								.addComponent(PasswordGet, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(botaoCancelar, Alignment.TRAILING))))
+								.addComponent(botaoCancelar)
+								.addComponent(passwordGet, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE))))
 					.addContainerGap())
 		);
 		gl_loginForms.setVerticalGroup(
@@ -168,16 +178,17 @@ public class Login extends JFrame {
 					.addGroup(gl_loginForms.createParallelGroup(Alignment.LEADING)
 						.addComponent(loginText, GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
 						.addComponent(loginGet, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(2)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_loginForms.createParallelGroup(Alignment.TRAILING)
-						.addComponent(PasswordGet, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(passwordText, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(70)
+						.addComponent(passwordText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(passwordGet, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+					.addGap(48)
 					.addGroup(gl_loginForms.createParallelGroup(Alignment.BASELINE)
 						.addComponent(botaoCancelar)
 						.addComponent(botaoEntrar))
 					.addGap(78))
 		);
+		gl_loginForms.linkSize(SwingConstants.VERTICAL, new Component[] {loginGet, passwordGet});
 		loginForms.setLayout(gl_loginForms);
 		loginPanel.setLayout(gl_loginPanel);
 		

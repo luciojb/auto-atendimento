@@ -26,6 +26,7 @@ public class ProdutoDTO {
 	
 	@Column(name="codigo_barras", nullable=false)
 	private long codigoBarras;
+	
 	/*
 	public ProdutoDTO(long id, double valor, String descricao, int quantidade, long codigoBarras) {
 		super();
