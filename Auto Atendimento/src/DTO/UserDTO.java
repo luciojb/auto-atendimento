@@ -12,7 +12,7 @@ public class UserDTO {
 	@Id
 	@GeneratedValue
 	@Column(nullable=false)
-	private int id;
+	private long id;
 	
 	@Column(nullable=false)
 	private String login;
@@ -20,11 +20,11 @@ public class UserDTO {
 	@Column(nullable=false)
 	private String pass;
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

@@ -12,7 +12,7 @@ public class CartaoDTO {
 	@Id
 	@GeneratedValue
 	@Column(nullable=false)
-	private int id;
+	private long id;
 	
 	@Column(name="numero_cartao", nullable=false)
 	private long numeroCartao;
@@ -96,11 +96,11 @@ public class CartaoDTO {
 		this.senha = senha;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

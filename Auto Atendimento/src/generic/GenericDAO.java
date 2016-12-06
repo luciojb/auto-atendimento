@@ -54,8 +54,7 @@ public class GenericDAO<T> {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.merge(obj);  
-            em.remove(obj);
+            em.remove(em.merge(obj));
             em.getTransaction().commit();
             return true;
         } catch (PersistenceException e) {
@@ -84,14 +83,65 @@ public class GenericDAO<T> {
 	
 	@SuppressWarnings("unchecked")
 	public T findById(long id) {
-        EntityManager em = emf.createEntityManager();
-        T obj = (T) em.find(typeClass, id);
-        em.close();
-        return obj;
+        try{
+        	EntityManager em = emf.createEntityManager();
+        	T obj = (T) em.find(typeClass, id);
+            em.close();
+            return obj;
+        } catch (Exception e) {
+        	System.err.println(e);
+            return null;
+		}
+        
     }
+	
+	@SuppressWarnings("unchecked")
+	public T findByField(String field, String desc) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            StringBuilder builder = new StringBuilder();
+            builder.append("SELECT e FROM ");
+            builder.append(typeClass.getSimpleName());
+            builder.append(" e");
+            builder.append(" WHERE e." + field);
+            builder.append(" = '" + desc+"'");
+            if (((T) em.createQuery(builder.toString()).getSingleResult())!=null){
+            	return (T) em.createQuery(builder.toString()).getSingleResult();
+            }
+            return null;
+        } catch (Exception e) {
+        	System.err.println(e);
+            return null;
+        } finally {
+            em.close();
+        }
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean search(String field, String desc) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            StringBuilder builder = new StringBuilder();
+            builder.append("SELECT e FROM ");
+            builder.append(typeClass.getSimpleName());
+            builder.append(" e");
+            builder.append(" WHERE e." + field);
+            builder.append(" LIKE %'" + desc+"'%");
+            if (((T) em.createQuery(builder.toString()).getSingleResult())!=null){
+            	return true;
+            }
+            return false;
+        } catch (Exception e) {
+        	System.err.println(e);
+            return false;
+        } finally {
+            em.close();
+        }
+	}
 
 	@PreDestroy
 	public void destruct() {
 		emf.close();
 	}
+	
 }

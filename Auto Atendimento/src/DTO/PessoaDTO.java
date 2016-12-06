@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
@@ -33,32 +34,27 @@ public class PessoaDTO {
 	private String email;
 	
 	@Column(nullable=false)
-	private String cpf;
+	private long cpf;
 	
 	@Column(nullable=false)
-	private String rg;
+	private long rg;
 	
 	@Column
 	private int idade;
+	
+	@Column
+	private int telefone;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="data_nascimento")
 	private Date dataNascimento;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
-    @JoinTable(name="pessoa_endereco",
-              joinColumns={ @JoinColumn(name="pessoa_id",  
-               referencedColumnName="id")},  
-              inverseJoinColumns={ @JoinColumn(name="endereco_id",   
-               referencedColumnName="id")})  
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name="endereco_id", referencedColumnName="id")  
 	private EnderecoDTO endereco;
 	
-	@OneToMany(cascade=CascadeType.ALL)
-	@JoinTable(name="pessoa_cartao",  
-	    joinColumns={@JoinColumn(name="pessoa_id", 
-	     referencedColumnName="id")},  
-	    inverseJoinColumns={@JoinColumn(name="cartao_id", 
-	      referencedColumnName="id")})
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name="cartao_id", referencedColumnName="id")  
 	private List<CartaoDTO> listaCartao = new ArrayList<CartaoDTO>();
 	
 	/*
@@ -98,11 +94,11 @@ public class PessoaDTO {
 		this.email = email;
 	}
 
-	public String getCpf() {
+	public long getCpf() {
 		return cpf;
 	}
 
-	public void setCpf(String cpf) {
+	public void setCpf(long cpf) {
 		this.cpf = cpf;
 	}
 
@@ -146,14 +142,22 @@ public class PessoaDTO {
 		this.id = id;
 	}
 
-	public String getRg() {
+	public long getRg() {
 		return rg;
 	}
 
-	public void setRg(String rg) {
+	public void setRg(long rg) {
 		this.rg = rg;
 	}
 
+	public int getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(int telefone) {
+		this.telefone = telefone;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -169,6 +173,8 @@ public class PessoaDTO {
 		builder.append(rg);
 		builder.append(", idade=");
 		builder.append(idade);
+		builder.append(", telefone=");
+		builder.append(telefone);
 		builder.append(", dataNascimento=");
 		builder.append(dataNascimento);
 		builder.append(", endereco=");

@@ -5,6 +5,12 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+
+import DAO.UserDAO;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
@@ -25,6 +31,8 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Login extends JFrame {
 
@@ -32,7 +40,10 @@ public class Login extends JFrame {
 	private JPanel loginPanel;
 	private JTextField loginGet;
 	private JPasswordField passwordGet;
+	private Manager homePage;
+	private UserDAO user;
 
+	
 	/**
 	 * Launch the application.
 	 */
@@ -53,6 +64,7 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
+		user = new UserDAO();
 		setVisible(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Login.class.getResource("/img/login icon.png")));
 		setTitle("Login Screen");
@@ -76,6 +88,10 @@ public class Login extends JFrame {
 		loginWelcomeText.setEditable(false);
 		loginWelcomeText.setBackground(SystemColor.window);
 		loginWelcomeText.setText("Bem-vindo à tela de login do sistema de Auto-Atendimento. O login somente é efetivado por pessoas devidamente creditadas.");
+		StyledDocument doc = loginWelcomeText.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		loginWelcomeText.setParagraphAttributes(center, false);
 		GroupLayout gl_welcomeMessage = new GroupLayout(welcomeMessage);
 		gl_welcomeMessage.setHorizontalGroup(
 			gl_welcomeMessage.createParallelGroup(Alignment.LEADING)
@@ -128,10 +144,10 @@ public class Login extends JFrame {
 		loginGet = new JTextField();
 		loginGet.setColumns(10);
 		addWindowListener(new WindowAdapter(){ 
-			  public void windowOpened( WindowEvent e){ 
-			    loginGet.requestFocus();
-			  } 
-			}); 
+		  public void windowOpened( WindowEvent e){ 
+		    loginGet.requestFocus();
+		  } 
+		}); 
 		
 		
 		JTextPane passwordText = new JTextPane();
@@ -141,15 +157,55 @@ public class Login extends JFrame {
 		passwordText.setBackground(Color.LIGHT_GRAY);
 		
 		JButton botaoEntrar = new JButton("Entrar");
+		
 		botaoEntrar.setIcon(new ImageIcon(Login.class.getResource("/img/loginOk.png")));
 		botaoEntrar.setHorizontalTextPosition(SwingConstants.LEFT);
 		
 		JButton botaoCancelar = new JButton("Cancelar");
+		botaoCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			dispose();
+			}
+		});
+		
 		botaoCancelar.setHorizontalTextPosition(SwingConstants.LEADING);
 		botaoCancelar.setIcon(new ImageIcon(Login.class.getResource("/img/loginCancel.png")));
 		
 		passwordGet = new JPasswordField();
-		passwordGet.setEditable(false);
+		
+		JTextPane txtpnLoginOuSenha = new JTextPane();
+		txtpnLoginOuSenha.setVisible(false);
+		txtpnLoginOuSenha.setEditable(false);
+		txtpnLoginOuSenha.setBackground(Color.LIGHT_GRAY);
+		txtpnLoginOuSenha.setForeground(Color.RED);
+		txtpnLoginOuSenha.setText("Login ou senha inválidos");
+		txtpnLoginOuSenha.setParagraphAttributes(center, false);
+		
+		botaoEntrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if (loginGet.getText().length()<3 || (String.valueOf(passwordGet.getPassword())).length()<6){
+					txtpnLoginOuSenha.setVisible(true);
+				} else {
+					if ((user.findByField("login", loginGet.getText()).getLogin().equals(loginGet.getText()) && 
+							user.findByField("pass", String.valueOf(passwordGet.getPassword())).getPass().equals(String.valueOf(passwordGet.getPassword())))){
+						dispose();
+						setVisible(false);
+						if (homePage == null){
+							homePage = new Manager();
+							homePage.setVisible(true);
+						} else {
+							homePage.setVisible(true);
+						}
+					} else {
+						txtpnLoginOuSenha.setVisible(true);
+					}
+				}
+				
+			}
+		});
+		
+		
 		GroupLayout gl_loginForms = new GroupLayout(loginForms);
 		gl_loginForms.setHorizontalGroup(
 			gl_loginForms.createParallelGroup(Alignment.TRAILING)
@@ -168,7 +224,10 @@ public class Login extends JFrame {
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(gl_loginForms.createParallelGroup(Alignment.LEADING)
 								.addComponent(botaoCancelar)
-								.addComponent(passwordGet, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE))))
+								.addComponent(passwordGet, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_loginForms.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(txtpnLoginOuSenha, GroupLayout.PREFERRED_SIZE, 195, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		gl_loginForms.setVerticalGroup(
@@ -186,7 +245,9 @@ public class Login extends JFrame {
 					.addGroup(gl_loginForms.createParallelGroup(Alignment.BASELINE)
 						.addComponent(botaoCancelar)
 						.addComponent(botaoEntrar))
-					.addGap(78))
+					.addGap(18)
+					.addComponent(txtpnLoginOuSenha, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(39))
 		);
 		gl_loginForms.linkSize(SwingConstants.VERTICAL, new Component[] {loginGet, passwordGet});
 		loginForms.setLayout(gl_loginForms);

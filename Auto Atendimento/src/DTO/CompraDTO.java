@@ -30,7 +30,7 @@ public class CompraDTO {
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "cliente_id")
+	@JoinColumn(name="cliente_id", referencedColumnName="id")
 	private PessoaDTO cliente;
 	
 	@ManyToMany(cascade=CascadeType.ALL)  
@@ -104,6 +104,10 @@ public class CompraDTO {
 		this.dataAtendimentoFim = dataAtendimentoFim;
 	}
 
+	public void adicionaProduto(ProdutoDTO produto){
+		this.listaProdutos.add(produto);
+	}
+	
 	
 	@Override
 	public String toString() {

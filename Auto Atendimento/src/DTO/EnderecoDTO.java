@@ -13,7 +13,7 @@ public class EnderecoDTO {
 	@Id
 	@GeneratedValue
 	@Column(nullable=false)
-	private int id;
+	private long id;
 	
 	@Column
 	private String pais;
@@ -109,11 +109,11 @@ public class EnderecoDTO {
 		this.cep = cep;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
