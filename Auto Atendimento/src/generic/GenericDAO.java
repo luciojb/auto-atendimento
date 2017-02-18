@@ -16,7 +16,9 @@ public class GenericDAO<T> {
 
 	@SuppressWarnings("rawtypes")
 	public GenericDAO(Class classType) {
-		emf = Persistence.createEntityManagerFactory("atendimento");
+		if (emf==null){
+			emf = Persistence.createEntityManagerFactory("atendimento");
+		}
 		this.typeClass = classType;
 	}
 
@@ -83,14 +85,15 @@ public class GenericDAO<T> {
 	
 	@SuppressWarnings("unchecked")
 	public T findById(long id) {
-        try{
-        	EntityManager em = emf.createEntityManager();
+		EntityManager em = emf.createEntityManager();
+		try{
         	T obj = (T) em.find(typeClass, id);
-            em.close();
             return obj;
         } catch (Exception e) {
         	System.err.println(e);
             return null;
+		} finally {
+			em.close();
 		}
         
     }
@@ -105,10 +108,8 @@ public class GenericDAO<T> {
             builder.append(" e");
             builder.append(" WHERE e." + field);
             builder.append(" = '" + desc+"'");
-            if (((T) em.createQuery(builder.toString()).getSingleResult())!=null){
-            	return (T) em.createQuery(builder.toString()).getSingleResult();
-            }
-            return null;
+            
+            return (T) em.createQuery(builder.toString()).getSingleResult();
         } catch (Exception e) {
         	System.err.println(e);
             return null;
@@ -118,7 +119,7 @@ public class GenericDAO<T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public boolean search(String field, String desc) {
+	public List<T> search(String field, String desc) {
         EntityManager em = emf.createEntityManager();
         try {
             StringBuilder builder = new StringBuilder();
@@ -127,13 +128,11 @@ public class GenericDAO<T> {
             builder.append(" e");
             builder.append(" WHERE e." + field);
             builder.append(" LIKE %'" + desc+"'%");
-            if (((T) em.createQuery(builder.toString()).getSingleResult())!=null){
-            	return true;
-            }
-            return false;
+            
+        	return em.createQuery(builder.toString()).getResultList();
         } catch (Exception e) {
         	System.err.println(e);
-            return false;
+            return null;
         } finally {
             em.close();
         }

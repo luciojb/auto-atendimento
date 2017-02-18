@@ -3,6 +3,7 @@ package gui;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.SimpleAttributeSet;
@@ -32,6 +33,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Atendimento extends JFrame {
 
@@ -71,7 +74,6 @@ public class Atendimento extends JFrame {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(170, 100, 860, 560);
 		contentPane = new JPanel();
-		contentPane.setVisible(false);
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -112,9 +114,30 @@ public class Atendimento extends JFrame {
 		realizarPagamento.setIcon(new ImageIcon(Atendimento.class.getResource("/img/payment.png")));
 		
 		JButton removerProduto = new JButton("Remover");
+		removerProduto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					produtoDto = produtoDao.findByField("codigo_barras", codigo.getText());
+					compraDto.setDataAtendimentoIn(new Date());
+					compraDto.removeProduto(produtoDto);
+					JOptionPane.showMessageDialog(null, "Produto removido com sucesso!");
+				} catch (Exception ex) {
+					productNotFound.setVisible(true);
+				}
+				
+				codigo.setText("");
+				codigo.requestFocus();
+			}
+		});
 		removerProduto.setIcon(new ImageIcon(Atendimento.class.getResource("/img/removePr.png")));
 		
 		JButton btnCancelaCompra = new JButton("Cancela Compra");
+		btnCancelaCompra.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				compraDto = new CompraDTO();
+				JOptionPane.showMessageDialog(null, "A compra do autoatendimento foi zerada!!");
+			}
+		});
 		
 		codigo = new JTextField();
 		codigo.addKeyListener(new KeyAdapter() {
@@ -135,13 +158,30 @@ public class Atendimento extends JFrame {
 			}
 		});
 		codigo.setColumns(10);
-		
+		addWindowListener(new WindowAdapter(){ 
+			  public void windowOpened( WindowEvent e){ 
+			    codigo.requestFocus();
+			  } 
+			}); 
 		
 		productNotFound.setVisible(false);
 		productNotFound.setFont(new Font("Dialog", Font.PLAIN, 15));
 		productNotFound.setForeground(Color.RED);
 		productNotFound.setEditable(false);
 		productNotFound.setText("Produto não encontrado.");
+		
+		JTextPane txtpnTotal = new JTextPane();
+		txtpnTotal.setFont(new Font("Monospaced", Font.BOLD, 23));
+		txtpnTotal.setEditable(false);
+		txtpnTotal.setText("TOTAL R$");
+		txtpnTotal.setParagraphAttributes(center, false);
+		
+		JTextPane txtpnRte = new JTextPane();
+		txtpnRte.setFont(new Font("Monospaced", Font.PLAIN, 23));
+		txtpnRte.setForeground(Color.RED);
+		txtpnRte.setText("0,00");
+		txtpnRte.setEditable(false);
+		txtpnRte.setParagraphAttributes(center, false);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -149,28 +189,30 @@ public class Atendimento extends JFrame {
 					.addComponent(sair, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
 					.addGap(23)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(painelProdutos, GroupLayout.PREFERRED_SIZE, 774, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(productNotFound, GroupLayout.PREFERRED_SIZE, 387, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-							.addGroup(gl_contentPane.createSequentialGroup()
-								.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-									.addComponent(codigo, GroupLayout.PREFERRED_SIZE, 384, GroupLayout.PREFERRED_SIZE)
-									.addGroup(gl_contentPane.createSequentialGroup()
-										.addGap(112)
-										.addComponent(realizarPagamento, GroupLayout.PREFERRED_SIZE, 177, GroupLayout.PREFERRED_SIZE)))
-								.addGap(132)
-								.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
-									.addComponent(removerProduto, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-									.addComponent(btnCancelaCompra, GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
-								.addGap(88))
-							.addGroup(gl_contentPane.createSequentialGroup()
-								.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-									.addComponent(painelProdutos, GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
-									.addComponent(prodCompraText, GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
-									.addComponent(textoPassarLeitor, GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
-									.addComponent(welcomeMessage, GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE))
-								.addGap(50)))))
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(codigo, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
+								.addComponent(productNotFound, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(btnCancelaCompra, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(removerProduto, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addGap(77)
+									.addComponent(realizarPagamento, GroupLayout.PREFERRED_SIZE, 177, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addGap(29)
+									.addComponent(txtpnTotal, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addComponent(txtpnRte, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE)))
+							.addGap(95))
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
+							.addComponent(welcomeMessage, Alignment.LEADING)
+							.addComponent(prodCompraText, Alignment.LEADING)
+							.addComponent(textoPassarLeitor, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE)))
+					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -178,56 +220,74 @@ public class Atendimento extends JFrame {
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addContainerGap()
-							.addComponent(welcomeMessage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(30)
-							.addComponent(textoPassarLeitor, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(prodCompraText, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(painelProdutos, GroupLayout.PREFERRED_SIZE, 181, GroupLayout.PREFERRED_SIZE))
-						.addComponent(sair, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
+							.addComponent(sair, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
+						.addComponent(welcomeMessage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(18)
+					.addComponent(textoPassarLeitor, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+					.addGap(12)
+					.addComponent(prodCompraText, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(painelProdutos, GroupLayout.PREFERRED_SIZE, 181, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-						.addComponent(codigo, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
-						.addComponent(removerProduto))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(productNotFound, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnCancelaCompra, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
-						.addComponent(realizarPagamento, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+								.addComponent(codigo, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
+								.addComponent(removerProduto))
+							.addGap(24))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(txtpnRte, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtpnTotal, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED)))
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+							.addComponent(btnCancelaCompra, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)
+							.addComponent(realizarPagamento, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
+						.addComponent(productNotFound, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+					.addGap(37))
 		);
 		gl_contentPane.linkSize(SwingConstants.VERTICAL, new Component[] {realizarPagamento, btnCancelaCompra});
+		gl_contentPane.linkSize(SwingConstants.VERTICAL, new Component[] {txtpnTotal, txtpnRte});
 		
-		productTable = new JTable();
+		DefaultTableModel model = new DefaultTableModel(
+				new Object[][] {
+					
+				},
+				new String[] {
+					"Item N\u00BA", "Id", "C\u00F3digo", "Descri\u00E7\u00E3o", "Valor R$"
+				}
+			) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 3964191088995738892L;
+				Class[] columnTypes = new Class[] {
+					Integer.class, Long.class, Long.class, String.class, String.class
+				};
+				public Class getColumnClass(int columnIndex) {
+					return columnTypes[columnIndex];
+				}
+				boolean[] columnEditables = new boolean[] {
+					false, false, false, false, false
+				};
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}
+			};
+
+
+		
+		productTable = new JTable(model);
 		productTable.setRowHeight(20);
-		productTable.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null},
-			},
-			new String[] {
-				"Item N\u00BA", "Id", "C\u00F3digo", "Descri\u00E7\u00E3o", "Valor R$"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				Integer.class, Integer.class, Long.class, String.class, String.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
 		productTable.getColumnModel().getColumn(0).setPreferredWidth(73);
 		productTable.getColumnModel().getColumn(1).setPreferredWidth(90);
 		productTable.getColumnModel().getColumn(2).setPreferredWidth(112);
 		productTable.getColumnModel().getColumn(3).setPreferredWidth(321);
 		productTable.getColumnModel().getColumn(4).setPreferredWidth(112);
+		for (ProdutoDTO p : compraDto.getListaProdutos()){
+			model.addRow(new Object[]{compraDto.getListaProdutos().indexOf(p), p.getId(), p.getCodigoBarras(), p.getDescricao(), p.getValor()});
+		}
 		painelProdutos.setViewportView(productTable);
 		contentPane.setLayout(gl_contentPane);
 	}

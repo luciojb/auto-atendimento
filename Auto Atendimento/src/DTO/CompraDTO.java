@@ -108,6 +108,10 @@ public class CompraDTO {
 		this.listaProdutos.add(produto);
 	}
 	
+	public void removeProduto(ProdutoDTO produto){
+		this.listaProdutos.remove(produto);
+	}
+	
 	
 	@Override
 	public String toString() {
